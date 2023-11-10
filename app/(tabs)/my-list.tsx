@@ -1,9 +1,9 @@
 import { Text, View } from "../../components/Themed";
 
-export default function Browse() {
+export default function MyList() {
   return (
     <View className="flex-1 items-center justify-center">
-      <Text>Browse</Text>
+      <Text>My list</Text>
     </View>
   );
 }
