@@ -78,13 +78,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: (Dimensions.get("window").height * 81) / 100,
     position: "relative",
+    zIndex: -1,
   },
   infoWrapper: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    height: Dimensions.get("window").height,
+    height: Dimensions.get("window").height / 2,
   },
   infoContainer: {
     paddingTop: 25,

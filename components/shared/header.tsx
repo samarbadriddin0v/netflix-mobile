@@ -6,8 +6,11 @@ import {
 } from "react-native";
 import { Text, View } from "../Themed";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function Header() {
+  const router = useRouter();
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -18,7 +21,10 @@ export default function Header() {
         />
 
         <View style={styles.rightSide}>
-          <TouchableOpacity activeOpacity={0.5}>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => router.push("/search")}
+          >
             <MaterialIcons
               name="search"
               size={30}
@@ -47,6 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    position: "relative",
   },
   logo: {
     width: 150,

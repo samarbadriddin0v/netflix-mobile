@@ -48,6 +48,19 @@ export const genreMovies = async (type: string, id: number) => {
   }
 };
 
+export const searchMovies = async (params: { query: string }) => {
+  try {
+    const { data } = await axios.get(
+      `${BASE_URL}/search/movie?api_key=${API_KEY}&language=en-US&page=1&include_adult=false`,
+      { params }
+    );
+
+    return data && data.results;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // IMAGE
 export const imageOriginal = (path?: string) => {
   return `${IMAGE_BASE_URL}/original${path}`;

@@ -1,6 +1,5 @@
 import React from "react";
 import { IMovie } from "../../types";
-import { Text, View } from "../Themed";
 import {
   Dimensions,
   Image,
@@ -20,7 +19,7 @@ export default function MovieCard({ item }: Props) {
     <TouchableWithoutFeedback>
       <Image
         source={{
-          uri: `${image185(item?.backdrop_path || item?.poster_path)}`,
+          uri: `${image185(item?.poster_path)}`,
         }}
         style={styles.image}
       />
