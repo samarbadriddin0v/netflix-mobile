@@ -14,4 +14,12 @@ export interface IMovie {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  status: string;
+  runtime: number;
+  genres: IGenre[];
+}
+
+export interface IGenre {
+  id: number;
+  name: string;
 }
