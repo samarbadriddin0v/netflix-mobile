@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { image185 } from "../../lib/api";
+import { usePathname, useRouter } from "expo-router";
 
 interface Props {
   item: IMovie;
@@ -15,8 +16,15 @@ interface Props {
 const { width, height } = Dimensions.get("window");
 
 export default function MovieCard({ item }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback
+      onPress={() =>
+        router.push(`/movie/${item.id}?type=${pathname === "/tv" && "tv"}`)
+      }
+    >
       <Image
         source={{
           uri: `${image185(item?.poster_path)}`,

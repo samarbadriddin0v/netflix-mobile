@@ -6,6 +6,7 @@ import Banner from "../../components/shared/banner";
 import { ScrollView, StyleSheet } from "react-native";
 import MovieCard from "../../components/card/movie-card";
 import Loader from "../../components/shared/loader";
+import { useRouter } from "expo-router";
 
 export default function Browse() {
   const [trending, setTrending] = useState<IMovie[]>([]);

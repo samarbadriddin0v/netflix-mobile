@@ -1,4 +1,9 @@
-import { Stack, useGlobalSearchParams } from "expo-router";
+import {
+  Stack,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
 import { Text, View } from "../../components/Themed";
 import {
   Dimensions,
@@ -8,29 +13,56 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { image500, movieDetails } from "../../lib/api";
+import {
+  image500,
+  movieCredits,
+  movieDetails,
+  similarMovies,
+} from "../../lib/api";
 import { useEffect, useState } from "react";
-import { IMovie } from "../../types";
+import { IActor, IMovie } from "../../types";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Loader from "../../components/shared/loader";
 import { LinearGradient } from "expo-linear-gradient";
+import ActorCard from "../../components/card/actor-card";
+import MovieCard from "../../components/card/movie-card";
 
 const { width, height } = Dimensions.get("window");
 
 export default function MovieDetail() {
   const [movie, setMovie] = useState<IMovie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [actors, setActors] = useState<IActor[]>([]);
+  const [movies, setMovies] = useState<IMovie[]>([]);
+
   const { id } = useGlobalSearchParams();
+  const local = useLocalSearchParams();
+
+  const type = local.type == "tv" ? "tv" : "movie";
+
+  const router = useRouter();
 
   useEffect(() => {
     getMovieDetail();
+    getMovieActor();
+    getSimilarMovies();
   }, [id]);
 
   const getMovieDetail = async () => {
     setIsLoading(true);
-    const data = await movieDetails(+id, "movie");
+    const data = await movieDetails(+id, type);
     setMovie(data);
     setIsLoading(false);
+  };
+
+  const getMovieActor = async () => {
+    const data = await movieCredits(+id, type);
+    setActors(data);
+  };
+
+  const getSimilarMovies = async () => {
+    const data = await similarMovies(+id, type);
+    setMovies(data);
   };
 
   return (
@@ -42,8 +74,8 @@ export default function MovieDetail() {
       <View style={styles.container}>
         <SafeAreaView style={styles.header}>
           <View style={styles.headerLogo}>
-            <TouchableOpacity>
-              <Ionicons name="arrow-back-circle" size={40} color="#E7442E" />
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back-circle" size={40} color="white" />
             </TouchableOpacity>
             <Image
               source={require("../../assets/images/netflix.png")}
@@ -96,6 +128,34 @@ export default function MovieDetail() {
         </View>
         <Text style={styles.overview}>{movie?.overview}</Text>
       </View>
+
+      {actors.length > 0 && (
+        <View style={styles.actorWrapper}>
+          <Text style={styles.actorTitle}>Actors</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 15 }}
+          >
+            {actors?.map((actor, idx) => (
+              <ActorCard key={actor.id} actor={actor} />
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      <View>
+        <Text style={styles.actorTitle}>Similar movies</Text>
+        <ScrollView
+          horizontal
+          contentContainerStyle={{ gap: 15 }}
+          showsHorizontalScrollIndicator={false}
+        >
+          {movies.map((item) => (
+            <MovieCard item={item} key={item.id} />
+          ))}
+        </ScrollView>
+      </View>
     </ScrollView>
   );
 }
@@ -147,5 +207,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "transparent",
     gap: 10,
+  },
+  actorWrapper: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  actorTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginBottom: 20,
   },
 });

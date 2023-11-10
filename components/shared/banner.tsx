@@ -12,6 +12,7 @@ import Header from "./header";
 import { LinearGradient } from "expo-linear-gradient";
 import { Headertabs } from "../../constants";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 interface Props {
   movies: IMovie[];
@@ -19,6 +20,8 @@ interface Props {
 
 export default function Banner({ movies }: Props) {
   const [randomMovie, setRandomMovie] = useState<IMovie | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const movie = movies[Math.floor(Math.random() * movies.length)];
@@ -58,11 +61,17 @@ export default function Banner({ movies }: Props) {
               <Ionicons name="add-outline" size={24} color={"white"} />
               <Text style={styles.textButton}>My List</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.playBtn}>
+            <TouchableOpacity
+              style={styles.playBtn}
+              onPress={() => router.push(`/movie/${randomMovie?.id}`)}
+            >
               <Ionicons name="ios-play" size={26} />
               <Text style={styles.textButtonPlay}>Play</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuBtn}>
+            <TouchableOpacity
+              style={styles.menuBtn}
+              onPress={() => router.push(`/movie/${randomMovie?.id}`)}
+            >
               <Feather name="info" size={24} color={"white"} />
               <Text style={styles.textButton}>Info</Text>
             </TouchableOpacity>
