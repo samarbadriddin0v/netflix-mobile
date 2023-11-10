@@ -30,6 +30,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="video-library" size={24} color={color} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -39,6 +40,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Entypo name="tv" size={24} color={color} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -48,6 +50,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Entypo name="list" size={24} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </Tabs>
