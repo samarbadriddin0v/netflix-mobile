@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_KEY, BASE_URL } from "../constants";
+import { API_KEY, BASE_URL, IMAGE_BASE_URL } from "../constants";
 
 export const trendingMovies = async () => {
   try {
@@ -35,4 +35,9 @@ export const popularMovies = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+
+// IMAGE
+export const imageOriginal = (path?: string) => {
+  return `${IMAGE_BASE_URL}/original${path}`;
 };
