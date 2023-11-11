@@ -15,6 +15,7 @@ import { createAccount } from "../lib/firebase";
 import { useGlobalContext } from "../context";
 import { v4 as uuid } from "uuid";
 import "react-native-get-random-values";
+import { useRouter } from "expo-router";
 
 const { height, width } = Dimensions.get("window");
 
@@ -22,6 +23,7 @@ export default function CreateAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const router = useRouter();
   const { user } = useGlobalContext();
 
   const onSubmit = async (values: { name: string; pin: string }) => {
@@ -34,9 +36,16 @@ export default function CreateAccount() {
         uid: user?.uid!,
         _id: uuid(),
       });
-      console.log(res);
+      if (!res.status) {
+        setError(res.message);
+        setIsLoading(false);
+      } else {
+        router.push("/account");
+        setIsLoading(false);
+      }
     } catch (error) {
-      console.log(error);
+      const result = error as Error;
+      setError(result.message);
     }
   };
 
@@ -49,6 +58,11 @@ export default function CreateAccount() {
         <View style={styles.wrapper}>
           <View style={styles.form}>
             <Text style={styles.title}>Create account</Text>
+            {error && (
+              <View style={styles.alert}>
+                <Text style={styles.alertText}>{error}</Text>
+              </View>
+            )}
             <Formik
               onSubmit={onSubmit}
               initialValues={{ name: "", pin: "" }}
@@ -163,5 +177,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "white",
+  },
+  alert: {
+    backgroundColor: "rgba(255,0,0,0.5)",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  alertText: {
+    color: "rgb(255,0,0)",
+    fontWeight: "bold",
   },
 });
