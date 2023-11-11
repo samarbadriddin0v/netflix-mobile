@@ -16,3 +16,7 @@ export const createAccountSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
   pin: yup.string().min(4).max(4).required("Pin is required"),
 });
+
+export const loginAccountShema = yup.object().shape({
+  pin: yup.string().min(4).max(4).required("Pin is required"),
+});

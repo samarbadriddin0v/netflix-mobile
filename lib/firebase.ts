@@ -100,3 +100,22 @@ export const deleteAccount = async (id: string) => {
 
   return { status: true, message: "Account deleted successfully" };
 };
+
+export const getAccount = async (pin: string, accountId: string) => {
+  const accountsRef = collection(db, "accounts");
+  const querySnapshot = await getDocs(accountsRef);
+  const accounts: IAccount[] = [];
+  querySnapshot.forEach((doc) => {
+    accounts.push(doc.data() as IAccount);
+  });
+
+  const account = accounts.find(
+    (account) => account.pin === pin && account._id === accountId
+  );
+
+  if (!account) {
+    return { status: false, message: "Account not found" };
+  }
+
+  return { status: true, message: "Account found", data: account };
+};

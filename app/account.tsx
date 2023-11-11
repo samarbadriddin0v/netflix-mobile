@@ -10,7 +10,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
 import { Entypo } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "expo-router";
+import { Redirect, usePathname, useRouter } from "expo-router";
 import { IAccount } from "../types";
 import { deleteAccount, getAccounts } from "../lib/firebase";
 import { useGlobalContext } from "../context";
@@ -20,7 +20,7 @@ export default function Account() {
   const [accounts, setAccounts] = useState<IAccount[]>([]);
 
   const router = useRouter();
-  const { user } = useGlobalContext();
+  const { user, account } = useGlobalContext();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -70,6 +70,8 @@ export default function Account() {
       setIsLoading(false);
     }
   };
+
+  if (account !== null) return <Redirect href={"/"} />;
 
   return (
     <View style={{ flex: 1 }}>
@@ -134,7 +136,11 @@ export default function Account() {
                 </TouchableOpacity>
               </View>
               <LinearGradient colors={["#3c3cb5", "#00d4ff"]} style={styles.go}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push(`/login-account?accountId=${account._id}`)
+                  }
+                >
                   <Entypo name="chevron-thin-right" size={36} color="white" />
                 </TouchableOpacity>
               </LinearGradient>
