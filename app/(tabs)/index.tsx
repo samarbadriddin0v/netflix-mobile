@@ -6,13 +6,16 @@ import Banner from "../../components/shared/banner";
 import { ScrollView, StyleSheet } from "react-native";
 import MovieCard from "../../components/card/movie-card";
 import Loader from "../../components/shared/loader";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
+import { useGlobalContext } from "../../context";
 
 export default function Browse() {
   const [trending, setTrending] = useState<IMovie[]>([]);
   const [topRated, setTopRated] = useState<IMovie[]>([]);
   const [popular, setPopular] = useState<IMovie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { user } = useGlobalContext();
 
   useEffect(() => {
     getTrendingMovies();
@@ -38,6 +41,7 @@ export default function Browse() {
   };
 
   if (isLoading) return <Loader />;
+  if (user == null) return <Redirect href={"/auth"} />;
 
   return (
     <ScrollView>

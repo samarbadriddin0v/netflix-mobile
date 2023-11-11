@@ -1,3 +1,5 @@
+import { Dispatch, ReactNode, SetStateAction } from "react";
+
 export interface IMovie {
   adult: boolean;
   backdrop_path: string;
@@ -37,4 +39,28 @@ export interface IActor {
   original_name: string;
   popularity: number;
   profile_path: string | null;
+}
+
+export interface ChildProps {
+  children: ReactNode;
+}
+
+export interface IContext {
+  user: IUser | null;
+  setUser: Dispatch<SetStateAction<IUser | null>>;
+  account: IAccount | null;
+  setAccount: Dispatch<SetStateAction<IAccount | null>>;
+}
+
+export interface IUser {
+  uid: string;
+  name: string;
+  email: string;
+}
+
+export interface IAccount {
+  _id: string;
+  uid: string;
+  name: string;
+  pin: string;
 }
