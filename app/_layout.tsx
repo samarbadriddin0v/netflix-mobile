@@ -9,6 +9,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { Provider } from "../context";
+import Toast from "react-native-toast-message";
 
 export { ErrorBoundary } from "expo-router";
 

@@ -64,3 +64,11 @@ export interface IAccount {
   name: string;
   pin: string;
 }
+
+export interface IList {
+  accountId: string;
+  poster_path: string;
+  id: number;
+  type: string;
+  title: string;
+}

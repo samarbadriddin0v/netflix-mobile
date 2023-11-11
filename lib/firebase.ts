@@ -11,7 +11,7 @@ import {
   getDocs,
   getFirestore,
 } from "firebase/firestore";
-import { IAccount } from "../types";
+import { IAccount, IList, IMovie } from "../types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCc2V8wy-EyahLrWPtd3uk4Z4ynTBGZhwU",
@@ -118,4 +118,49 @@ export const getAccount = async (pin: string, accountId: string) => {
   }
 
   return { status: true, message: "Account found", data: account };
+};
+
+export const createList = async (
+  accountId: string,
+  data: { poster_path: string; id: number; title: string },
+  type: string
+) => {
+  // Get all lists
+  const listsRef = collection(db, "lists");
+  const querySnapshot = await getDocs(listsRef);
+  const lists: { id: number; accountId: string; title: string }[] = [];
+  querySnapshot.forEach((doc) => {
+    lists.push(doc.data() as { id: number; accountId: string; title: string });
+  });
+
+  // Check if list already exists
+  const list = lists.find(
+    (list) => list.id === data.id && list.accountId === accountId
+  );
+
+  if (list) {
+    return { status: false, message: "List already exists" };
+  }
+
+  const { poster_path, id, title } = data;
+  await addDoc(collection(db, "lists"), {
+    accountId,
+    poster_path,
+    id,
+    type,
+    title,
+  });
+
+  return { status: true, message: "List created successfully" };
+};
+
+export const getAllLists = async (accountId: string) => {
+  const listsRef = collection(db, "lists");
+  const querySnapshot = await getDocs(listsRef);
+  const lists: IList[] = [];
+  querySnapshot.forEach((doc) => {
+    lists.push(doc.data() as IList);
+  });
+
+  return lists.filter((list) => list.accountId === accountId);
 };

@@ -6,6 +6,8 @@ import {
 } from "expo-router";
 import { Text, View } from "../../components/Themed";
 import {
+  ActivityIndicator,
+  Alert,
   Dimensions,
   Image,
   SafeAreaView,
@@ -26,6 +28,9 @@ import Loader from "../../components/shared/loader";
 import { LinearGradient } from "expo-linear-gradient";
 import ActorCard from "../../components/card/actor-card";
 import MovieCard from "../../components/card/movie-card";
+import { createList } from "../../lib/firebase";
+import { useGlobalContext } from "../../context";
+import Toast from "react-native-toast-message";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,6 +39,7 @@ export default function MovieDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const [actors, setActors] = useState<IActor[]>([]);
   const [movies, setMovies] = useState<IMovie[]>([]);
+  const [isAdding, setIsAdding] = useState(false);
 
   const { id } = useGlobalSearchParams();
   const local = useLocalSearchParams();
@@ -41,6 +47,7 @@ export default function MovieDetail() {
   const type = local.type == "tv" ? "tv" : "movie";
 
   const router = useRouter();
+  const { account } = useGlobalContext();
 
   useEffect(() => {
     getMovieDetail();
@@ -65,13 +72,53 @@ export default function MovieDetail() {
     setMovies(data);
   };
 
+  const addList = async () => {
+    try {
+      setIsAdding(true);
+      const res = await createList(
+        account?._id!,
+        {
+          poster_path: movie?.poster_path!,
+          id: +movie?.id!,
+          title: movie?.title!,
+        },
+        type
+      );
+
+      if (res.status) {
+        setIsAdding(false);
+      } else {
+        setIsAdding(false);
+        Alert.alert("Error", res.message);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsAdding(false);
+    }
+  };
+
   return (
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: 20 }}
     >
-      <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
+        {isAdding && (
+          <View
+            style={{
+              position: "absolute",
+              zIndex: 20,
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,.6)",
+            }}
+          >
+            <ActivityIndicator />
+          </View>
+        )}
+        <Stack.Screen options={{ headerShown: false }} />
         <SafeAreaView style={styles.header}>
           <View style={styles.headerLogo}>
             <TouchableOpacity onPress={() => router.back()}>
@@ -84,7 +131,7 @@ export default function MovieDetail() {
             />
           </View>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={addList}>
             <AntDesign name="heart" size={40} color="red" />
           </TouchableOpacity>
         </SafeAreaView>
@@ -96,7 +143,7 @@ export default function MovieDetail() {
           <View>
             <Image
               source={{ uri: `${image500(movie?.poster_path)}` }}
-              style={{ width: width, height: height * 0.7 }}
+              style={{ width: width, height: height * 0.7, zIndex: -1 }}
             />
             <LinearGradient
               colors={["transparent", "rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 1)"]}
