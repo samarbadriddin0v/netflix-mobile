@@ -42,7 +42,7 @@ export default function Account() {
 
         <TouchableOpacity
           style={styles.add}
-          onPress={() => router.push("/modal")}
+          onPress={() => router.push("/create-account")}
         >
           <Text style={styles.addText}>Add account</Text>
         </TouchableOpacity>

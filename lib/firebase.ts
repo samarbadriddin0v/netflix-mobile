@@ -2,7 +2,14 @@ import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 import { Auth, getAuth, initializeAuth } from "firebase/auth";
 import { getReactNativePersistence } from "firebase/auth/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Firestore, getFirestore } from "firebase/firestore";
+import {
+  Firestore,
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+} from "firebase/firestore";
+import { IAccount } from "../types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCc2V8wy-EyahLrWPtd3uk4Z4ynTBGZhwU",
@@ -34,3 +41,14 @@ if (!getApps().length) {
 }
 
 export { auth, db };
+
+export const createAccount = async (data: IAccount) => {
+  const { _id, name, pin, uid } = data;
+  const account = await addDoc(collection(db, "accounts"), {
+    name,
+    uid,
+    pin,
+    _id,
+  });
+  return account;
+};
