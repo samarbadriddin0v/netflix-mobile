@@ -22,13 +22,18 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, db } from "../lib/firebase";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { addDoc, collection } from "firebase/firestore";
+import { useGlobalContext } from "../context";
 
 const { height } = Dimensions.get("window");
 
 export default function Auth() {
   const [state, setstate] = useState<"login" | "register">("login");
+
+  const { user } = useGlobalContext();
+
+  if (user !== null) return <Redirect href={"/account"} />;
 
   return (
     <View style={{ flex: 1 }}>

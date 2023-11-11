@@ -41,7 +41,7 @@ export default function Browse() {
   };
 
   if (isLoading) return <Loader />;
-  if (user == null) return <Redirect href={"/auth"} />;
+  if (user === null) return <Redirect href={"/auth"} />;
   if (account === null) return <Redirect href={"/account"} />;
 
   return (
