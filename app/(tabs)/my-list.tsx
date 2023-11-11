@@ -2,13 +2,14 @@ import { Link, useRouter } from "expo-router";
 import {
   Dimensions,
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { useEffect, useState } from "react";
-import { IList, IMovie } from "../../types";
+import { IList } from "../../types";
 import { useGlobalContext } from "../../context";
 import { getAllLists } from "../../lib/firebase";
 import Loader from "../../components/shared/loader";
@@ -52,7 +53,11 @@ export default function MyList() {
           </Link>
         </View>
       ) : (
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={getLists} />
+          }
+        >
           <View className="flex-1">
             <View style={styles.row}>
               <View>

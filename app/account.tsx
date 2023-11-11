@@ -2,7 +2,9 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  RefreshControl,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
 } from "react-native";
 import { Text, View } from "../components/Themed";
@@ -14,6 +16,7 @@ import { Redirect, usePathname, useRouter } from "expo-router";
 import { IAccount } from "../types";
 import { deleteAccount, getAccounts } from "../lib/firebase";
 import { useGlobalContext } from "../context";
+import { isLoading } from "expo-font";
 
 export default function Account() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,11 +24,10 @@ export default function Account() {
 
   const router = useRouter();
   const { user, account } = useGlobalContext();
-  const pathname = usePathname();
 
   useEffect(() => {
     getAllAccounts();
-  }, [pathname]);
+  }, []);
 
   const getAllAccounts = async () => {
     try {
@@ -114,47 +116,57 @@ export default function Account() {
           ))}
         </View>
       ) : (
-        <View style={styles.wrapper}>
-          {accounts.map((account) => (
-            <View style={styles.account} key={account._id}>
-              <Image
-                resizeMode="contain"
-                style={styles.profile}
-                source={{ uri: "https://tinyurl.com/5n7b72k3" }}
-              />
-              <View style={styles.profileInfo}>
-                <Text
-                  style={{ color: "white", fontSize: 24, fontWeight: "bold" }}
+        <ScrollView
+          contentContainerStyle={{ flex: 1 }}
+          refreshControl={
+            <RefreshControl onRefresh={getAllAccounts} refreshing={isLoading} />
+          }
+        >
+          <View style={styles.wrapper}>
+            {accounts.map((account) => (
+              <View style={styles.account} key={account._id}>
+                <Image
+                  resizeMode="contain"
+                  style={styles.profile}
+                  source={{ uri: "https://tinyurl.com/5n7b72k3" }}
+                />
+                <View style={styles.profileInfo}>
+                  <Text
+                    style={{ color: "white", fontSize: 24, fontWeight: "bold" }}
+                  >
+                    {account.name}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.editBtn}
+                    onPress={() => onDelete(account._id)}
+                  >
+                    <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+                <LinearGradient
+                  colors={["#3c3cb5", "#00d4ff"]}
+                  style={styles.go}
                 >
-                  {account.name}
-                </Text>
-                <TouchableOpacity
-                  style={styles.editBtn}
-                  onPress={() => onDelete(account._id)}
-                >
-                  <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(`/login-account?accountId=${account._id}`)
+                    }
+                  >
+                    <Entypo name="chevron-thin-right" size={36} color="white" />
+                  </TouchableOpacity>
+                </LinearGradient>
               </View>
-              <LinearGradient colors={["#3c3cb5", "#00d4ff"]} style={styles.go}>
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push(`/login-account?accountId=${account._id}`)
-                  }
-                >
-                  <Entypo name="chevron-thin-right" size={36} color="white" />
-                </TouchableOpacity>
-              </LinearGradient>
-            </View>
-          ))}
-          {accounts.length < 4 && (
-            <TouchableOpacity
-              style={styles.add}
-              onPress={() => router.push("/create-account")}
-            >
-              <Text style={styles.addText}>Add account</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+            ))}
+            {accounts.length < 4 && (
+              <TouchableOpacity
+                style={styles.add}
+                onPress={() => router.push("/create-account")}
+              >
+                <Text style={styles.addText}>Add account</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </ScrollView>
       )}
     </View>
   );

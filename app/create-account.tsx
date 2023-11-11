@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -42,6 +43,7 @@ export default function CreateAccount() {
       } else {
         router.push("/account");
         setIsLoading(false);
+        Alert.alert("Account created successfully", "Scroll down to see it");
       }
     } catch (error) {
       const result = error as Error;

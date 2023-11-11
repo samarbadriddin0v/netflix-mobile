@@ -182,7 +182,6 @@ function Register({ setstate }: Props) {
     try {
       setIsLoading(true);
       const { email, password, firstName, lastName } = values;
-      setPersistence(auth, inMemoryPersistence);
       const res = await createUserWithEmailAndPassword(auth, email, password);
       updateProfile(res.user, {
         displayName: `${firstName} ${lastName}`,
