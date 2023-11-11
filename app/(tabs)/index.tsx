@@ -15,7 +15,7 @@ export default function Browse() {
   const [popular, setPopular] = useState<IMovie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user } = useGlobalContext();
+  const { user, account } = useGlobalContext();
 
   useEffect(() => {
     getTrendingMovies();
@@ -42,6 +42,7 @@ export default function Browse() {
 
   if (isLoading) return <Loader />;
   if (user == null) return <Redirect href={"/auth"} />;
+  if (account === null) return <Redirect href={"/account"} />;
 
   return (
     <ScrollView>
